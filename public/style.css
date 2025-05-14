@@ -1,0 +1,74 @@
+/* public/style.css */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 40px auto;
+    background: #f4f4f4;
+    max-width: 600px;
+  }
+  
+  h1, h2 {
+    color: #333;
+  }
+  
+  form input, form select {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background: #0056b3;
+  }
+  
+  a {
+    color: #007BFF;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  #results, #scoreBoard {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #222;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    background: white;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .nav-logo {
+    width: 40px;
+    vertical-align: middle;
+  }
+  

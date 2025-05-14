@@ -1,0 +1,6 @@
+Règles du Jeu de Dé :
+
+- Deux joueurs sont automatiquement appariés.
+- Chacun lance un dé pendant 5 manches.
+- Le joueur avec le total le plus élevé gagne la partie.
+- En cas d'égalité, la partie est déclarée nulle.

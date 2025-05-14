@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Gestion</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+  <main>
+    <h1>⚙️ Espace Admin</h1>
+
+    <section>
+      <h2>Utilisateurs</h2>
+      <div id="users"></div>
+    </section>
+
+    <section>
+      <h2>Scores</h2>
+      <div id="scores"></div>
+    </section>
+
+    <section>
+      <h2>Modifier les Règles</h2>
+      <form id="rulesForm">
+        <textarea id="rulesText" rows="10" style="width:100%"></textarea><br>
+        <button type="submit">Enregistrer</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    fetch("/header.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("navbar").innerHTML = html)
+
+    fetch("/admin/users").then(res => res.json()).then(data => {
+      document.getElementById('users').innerHTML = data.map(u => `
+        <div>
+          ${u.username} (${u.role}) - ${u.location}
+          <form method="POST" action="/admin/user/delete" style="display:inline">
+            <input type="hidden" name="id" value="${u.id}">
+            <button>Supprimer</button>
+          </form>
+          <form method="POST" action="/admin/user/promote" style="display:inline">
+            <input type="hidden" name="id" value="${u.id}">
+            <button>Promouvoir</button>
+          </form>
+        </div>
+      `).join('')
+    })
+
+    fetch("/admin/scores").then(res => res.json()).then(data => {
+      document.getElementById('scores').innerHTML = data.map(s => `
+        <div>${s.username} - 🏆 ${s.total_wins} | ❌ ${s.total_losses} | 🤝 ${s.total_draws}</div>
+      `).join('')
+    })
+
+    fetch("/admin/rules").then(res => res.text()).then(text => {
+      document.getElementById('rulesText').value = text
+    })
+
+    document.getElementById('rulesForm').addEventListener('submit', e => {
+      e.preventDefault()
+      fetch('/admin/rules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: document.getElementById('rulesText').value })
+      }).then(() => alert('✅ Règles mises à jour'))
+    })
+  </script>
+</body>
+</html>

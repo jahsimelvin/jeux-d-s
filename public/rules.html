@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Règles du Jeu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <main>
+    <h1>Règles du Jeu de Dé</h1>
+    <ul>
+      <li>Chaque partie se joue à 5 manches.</li>
+      <li>Deux joueurs sont automatiquement appariés.</li>
+      <li>À chaque manche, chaque joueur lance un dé (1 à 6).</li>
+      <li>Celui qui obtient le score le plus élevé gagne la manche.</li>
+      <li>En cas d’égalité, la manche est considérée nulle.</li>
+      <li>Le joueur avec le plus de manches gagnées remporte la partie.</li>
+    </ul>
+  </main>
+
+  <script>
+    fetch("/header.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("navbar").innerHTML = html);
+  </script>
+</body>
+</html>

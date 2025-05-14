@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu de Dé</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <main>
+    <h1>Jeu de Dé Multijoueur</h1>
+    <div id="status">Connexion...</div>
+    <button id="rollBtn" disabled>Lancer le dé</button>
+    <div id="results"></div>
+    <div id="scoreBoard"></div>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+  <script>
+    fetch("/header.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("navbar").innerHTML = html);
+  </script>
+</body>
+</html>

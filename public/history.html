@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Historique des Parties</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📜 Historique de mes Parties</h1>
+  <div id="historyContainer">Chargement...</div>
+
+  <script>
+    fetch('/api/history')
+      .then(res => res.json())
+      .then(data => {
+        const div = document.getElementById('historyContainer');
+        if (data.length === 0) {
+          div.innerHTML = '<p>Aucune partie jouée.</p>';
+          return;
+        }
+
+        div.innerHTML = '<ul>' + data.map(game => `
+          <li>
+            Date : ${new Date(game.date).toLocaleString()}<br>
+            Manches gagnées : ${game.wins}, perdues : ${game.losses}, égalités : ${game.draws}
+          </li>
+        `).join('') + '</ul>';
+      });
+  </script>
+</body>
+</html>

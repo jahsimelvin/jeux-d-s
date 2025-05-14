@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscription</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📝 Inscription</h1>
+  <form method="POST" action="/register">
+    <input type="text" name="name" placeholder="Nom" required><br><br>
+    <input type="text" name="username" placeholder="Pseudo" required><br><br>
+    <input type="password" name="password" placeholder="Mot de passe" required><br><br>
+    <select name="sex" required>
+      <option value="">-- Sexe --</option>
+      <option value="Homme">Homme</option>
+      <option value="Femme">Femme</option>
+      <option value="Autre">Autre</option>
+    </select><br><br>
+    <input type="text" name="location" placeholder="Pays" required><br><br>
+    <button type="submit">Créer un compte</button>
+  </form>
+  <p>Déjà inscrit ? <a href="/login.html">Se connecter</a></p>
+</body>
+</html>
