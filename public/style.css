@@ -72,3 +72,25 @@ body {
     vertical-align: middle;
   }
   
+  .rules-box {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-top: 15px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.back-link {
+  margin-top: 20px;
+}
+
+.scrollable-history {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 15px;
+  background: #fff;
+  margin-top: 15px;
+  border-radius: 6px;
+}

@@ -6,26 +6,46 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>📜 Historique de mes Parties</h1>
-  <div id="historyContainer">Chargement...</div>
+  <div id="navbar"></div>
+
+  <main class="content">
+    <h1>📜 Historique de mes Parties</h1>
+    <div id="historyContainer" class="scrollable-history">Chargement...</div>
+
+    <div class="back-link">
+      <a href="/index.html">⬅️ Retour au jeu</a>
+    </div>
+  </main>
 
   <script>
+    fetch('/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('navbar').innerHTML = html)
+
     fetch('/api/history')
       .then(res => res.json())
       .then(data => {
-        const div = document.getElementById('historyContainer');
+        const div = document.getElementById('historyContainer')
         if (data.length === 0) {
-          div.innerHTML = '<p>Aucune partie jouée.</p>';
-          return;
+          div.innerHTML = '<p>Aucune partie jouée.</p>'
+          return
         }
 
         div.innerHTML = '<ul>' + data.map(game => `
-          <li>
-            Date : ${new Date(game.date).toLocaleString()}<br>
-            Manches gagnées : ${game.wins}, perdues : ${game.losses}, égalités : ${game.draws}
+          <li style="margin-bottom: 15px;">
+            <b>📅 ${new Date(game.date_played).toLocaleString()}</b><br>
+            👤 Adversaire : ${game.opponent}<br>
+            ⚔️ Résultat :
+              ${game.wins > game.losses ? '✅ Victoire' : game.wins < game.losses ? '❌ Défaite' : '🤝 Égalité'}<br>
+            🧮 Score : victoire : ${game.wins} / défaite : ${game.losses} / égalités : ${game.draws}
+
           </li>
-        `).join('') + '</ul>';
-      });
+        `).join('') + '</ul>'
+      })
+      .catch(err => {
+        document.getElementById('historyContainer').innerText = 'Erreur de chargement.'
+        console.error(err)
+      })
   </script>
 </body>
 </html>

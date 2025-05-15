@@ -74,6 +74,14 @@ app.get('/api/leaderboard', isAuthenticated, async (req, res) => {
   res.json(rows)
 })
 
+app.get('/admin.html', (req, res, next) => {
+  if (req.session.user?.role === 'admin') {
+    return next();
+  }
+  return res.status(403).send('Accès refusé');
+});
+
+
 let waitingPlayer = null
 let games = {}
 
@@ -135,6 +143,82 @@ async function updateScore(userId, w, l, d) {
     await db.query('INSERT INTO scores (user_id, total_wins, total_losses, total_draws) VALUES (?, ?, ?, ?)', [userId, w, l, d])
   }
 }
+
+app.get('/api/rules', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT content FROM rules WHERE id = 1')
+    res.send(rows[0]?.content || '')
+  } catch (err) {
+    console.error('Erreur /api/rules :', err)
+    res.status(500).send('Erreur de lecture des règles.')
+  }
+})
+
+app.get('/api/history', isAuthenticated, async (req, res) => {
+  const userId = req.session.user.id
+
+  const [rows] = await db.query(`
+    SELECT g.date_played, 
+           u.username AS opponent,
+           CASE 
+             WHEN g.player1_id = ? THEN g.player1_wins
+             ELSE g.player2_wins
+           END AS wins,
+           CASE 
+             WHEN g.player1_id = ? THEN g.player2_wins
+             ELSE g.player1_wins
+           END AS losses,
+           g.draws
+    FROM games g
+    JOIN users u ON u.id = CASE 
+                             WHEN g.player1_id = ? THEN g.player2_id
+                             ELSE g.player1_id
+                           END
+    WHERE g.player1_id = ? OR g.player2_id = ?
+    ORDER BY g.date_played DESC
+  `, [userId, userId, userId, userId, userId])
+
+  res.json(rows)
+})
+
+app.get('/admin/scores', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT u.username, s.total_wins, s.total_losses, s.total_draws
+      FROM scores s
+      JOIN users u ON s.user_id = u.id
+      ORDER BY s.total_wins DESC
+    `)
+    res.json(rows)
+  } catch (err) {
+    console.error('Erreur leaderboard :', err)
+    res.status(500).send('Erreur de lecture du classement.')
+  }
+})
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+
+  if (!rows.length) return res.status(401).send('Utilisateur non trouvé');
+
+  const user = rows[0];
+  const isValid = await bcrypt.compare(password, user.password);
+
+  if (!isValid) return res.status(401).send('Mot de passe incorrect');
+
+  req.session.user = {
+    id: user.id,
+    username: user.username,
+    role: user.role
+  };
+
+  if (user.role === 'admin') {
+    return res.redirect('/admin.html');
+  } else {
+    return res.redirect('/home.html');
+  }
+});
 
 server.listen(3000, '192.168.80.1', () => {
   console.log('✅ Serveur lancé sur http://192.168.80.1:3000')

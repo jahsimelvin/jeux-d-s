@@ -2,72 +2,87 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Gestion</title>
+  <title>Espace Admin</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="navbar"></div>
-  <main>
-    <h1>⚙️ Espace Admin</h1>
+  <main class="content">
+    <h1>🔐 Administration du Jeu</h1>
 
-    <section>
-      <h2>Utilisateurs</h2>
-      <div id="users"></div>
+    <section class="admin-section">
+      <h2>👥 Gérer les Utilisateurs</h2>
+      <div id="usersContainer">Chargement...</div>
     </section>
 
-    <section>
-      <h2>Scores</h2>
-      <div id="scores"></div>
+    <section class="admin-section">
+      <h2>📜 Modifier les Règles du Jeu</h2>
+      <textarea id="rulesText" rows="8" cols="80"></textarea><br>
+      <button onclick="updateRules()">💾 Enregistrer</button>
+      <p id="rulesMsg"></p>
     </section>
 
-    <section>
-      <h2>Modifier les Règles</h2>
-      <form id="rulesForm">
-        <textarea id="rulesText" rows="10" style="width:100%"></textarea><br>
-        <button type="submit">Enregistrer</button>
-      </form>
+    <section class="admin-section">
+      <h2>🏆 Classement Global</h2>
+      <div id="leaderboardContainer">Chargement...</div>
     </section>
   </main>
 
   <script>
-    fetch("/header.html")
+    // Charger utilisateurs
+    fetch('/admin/users')
+      .then(res => res.json())
+      .then(data => {
+        const div = document.getElementById('usersContainer')
+        if (!data.length) return div.innerHTML = 'Aucun utilisateur.'
+
+        div.innerHTML = data.map(u => `
+          <div style="border:1px solid #ccc; padding:10px; margin:8px; border-radius:5px;">
+            👤 <b>${u.username}</b> — ${u.role} | ${u.sex} | ${u.location}<br>
+            <button onclick="promote('${u.id}')">⬆️ Promouvoir</button>
+            <button onclick="deleteUser('${u.id}')">🗑️ Supprimer</button>
+          </div>
+        `).join('')
+      })
+
+    // Charger les règles
+    fetch('/api/rules')
       .then(res => res.text())
-      .then(html => document.getElementById("navbar").innerHTML = html)
+      .then(text => document.getElementById('rulesText').value = text)
 
-    fetch("/admin/users").then(res => res.json()).then(data => {
-      document.getElementById('users').innerHTML = data.map(u => `
-        <div>
-          ${u.username} (${u.role}) - ${u.location}
-          <form method="POST" action="/admin/user/delete" style="display:inline">
-            <input type="hidden" name="id" value="${u.id}">
-            <button>Supprimer</button>
-          </form>
-          <form method="POST" action="/admin/user/promote" style="display:inline">
-            <input type="hidden" name="id" value="${u.id}">
-            <button>Promouvoir</button>
-          </form>
-        </div>
-      `).join('')
-    })
+    // Charger classement
+    fetch('/admin/scores')
+      .then(res => res.json())
+      .then(data => {
+        const div = document.getElementById('leaderboardContainer')
+        div.innerHTML = data.map(s => `
+          <div style="border:1px solid #ccc; padding:10px; margin:8px; border-radius:5px;">
+            👑 ${s.username} — 🏆 ${s.total_wins} / ❌ ${s.total_losses} / 🤝 ${s.total_draws}
+          </div>
+        `).join('')
+      })
 
-    fetch("/admin/scores").then(res => res.json()).then(data => {
-      document.getElementById('scores').innerHTML = data.map(s => `
-        <div>${s.username} - 🏆 ${s.total_wins} | ❌ ${s.total_losses} | 🤝 ${s.total_draws}</div>
-      `).join('')
-    })
-
-    fetch("/admin/rules").then(res => res.text()).then(text => {
-      document.getElementById('rulesText').value = text
-    })
-
-    document.getElementById('rulesForm').addEventListener('submit', e => {
-      e.preventDefault()
+    function updateRules() {
+      const content = document.getElementById('rulesText').value
       fetch('/admin/rules', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: document.getElementById('rulesText').value })
-      }).then(() => alert('✅ Règles mises à jour'))
-    })
+        body: JSON.stringify({ content })
+      }).then(res => {
+        document.getElementById('rulesMsg').innerText = res.ok
+          ? '✅ Règles mises à jour.' : '❌ Erreur.'
+      })
+    }
+
+    function deleteUser(id) {
+      if (!confirm("Confirmer la suppression ?")) return
+      fetch('/admin/users/' + id, { method: 'DELETE' })
+        .then(() => location.reload())
+    }
+
+    function promote(id) {
+      fetch('/admin/users/' + id + '/promote', { method: 'POST' })
+        .then(() => location.reload())
+    }
   </script>
 </body>
 </html>

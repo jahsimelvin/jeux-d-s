@@ -8,39 +8,41 @@
 <body>
   <div id="navbar"></div>
 
-  <main>
+  <main class="content">
     <h1>🏆 Classement des Joueurs</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Joueur</th>
-          <th>Victoires</th>
-          <th>Défaites</th>
-          <th>Égalités</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboard"></tbody>
-    </table>
+    <div id="leaderboardContainer" class="scrollable-history">Chargement...</div>
+    <div class="back-link">
+      <a href="/index.html">⬅️ Retour au jeu</a>
+    </div>
   </main>
 
   <script>
-    fetch("/api/leaderboard")
+    fetch('/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('navbar').innerHTML = html)
+
+    fetch('/admin/scores')
       .then(res => res.json())
       .then(data => {
-        const tbody = document.getElementById("leaderboard")
-        tbody.innerHTML = data.map(u => `
-          <tr>
-            <td>${u.username}</td>
-            <td>${u.total_wins}</td>
-            <td>${u.total_losses}</td>
-            <td>${u.total_draws}</td>
-          </tr>
+        const div = document.getElementById('leaderboardContainer')
+        if (data.length === 0) {
+          div.innerHTML = '<p>Aucun score enregistré.</p>'
+          return
+        }
+
+        div.innerHTML = data.map(p => `
+          <div style="background:#fff; border:1px solid #ccc; padding:12px; margin-bottom:10px; border-radius:5px;">
+            <p><b>👤 ${p.username}</b></p>
+            <p>🏆 Victoires : ${p.total_wins}</p>
+            <p>❌ Défaites : ${p.total_losses}</p>
+            <p>🤝 Égalités : ${p.total_draws}</p>
+          </div>
         `).join('')
       })
-
-    fetch("/header.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("navbar").innerHTML = html)
+      .catch(err => {
+        document.getElementById('leaderboardContainer').innerText = 'Erreur de chargement.'
+        console.error(err)
+      })
   </script>
 </body>
 </html>

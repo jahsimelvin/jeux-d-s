@@ -8,22 +8,29 @@
 <body>
   <div id="navbar"></div>
 
-  <main>
-    <h1>Règles du Jeu de Dé</h1>
-    <ul>
-      <li>Chaque partie se joue à 5 manches.</li>
-      <li>Deux joueurs sont automatiquement appariés.</li>
-      <li>À chaque manche, chaque joueur lance un dé (1 à 6).</li>
-      <li>Celui qui obtient le score le plus élevé gagne la manche.</li>
-      <li>En cas d’égalité, la manche est considérée nulle.</li>
-      <li>Le joueur avec le plus de manches gagnées remporte la partie.</li>
-    </ul>
+  <main class="content">
+    <h1>📜 Règles du Jeu</h1>
+    <div id="rulesContent" class="rules-box">Chargement des règles...</div>
+    <div class="back-link">
+      <a href="/home.html">⬅️ Retour au jeu</a>
+    </div>
   </main>
 
   <script>
-    fetch("/header.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("navbar").innerHTML = html);
+  fetch('/header.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('navbar').innerHTML = html)
+
+  fetch('/api/rules')
+    .then(res => res.ok ? res.text() : Promise.reject('Erreur de chargement'))
+    .then(text => {
+      document.getElementById('rulesContent').innerText = text
+    })
+    .catch(err => {
+      document.getElementById('rulesContent').innerText = 'Erreur : impossible de charger les règles.'
+      console.error('Erreur fetch rules :', err)
+    })
   </script>
+
 </body>
 </html>
