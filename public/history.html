@@ -2,8 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Historique des Parties</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Historique</title>
+  <link rel="icon" type="image/png" href="/static/dice.png">
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/client.js"></script>
 </head>
 <body>
   <div id="navbar"></div>
@@ -18,7 +20,7 @@
   </main>
 
   <script>
-    fetch('/header.html')
+    fetch('/static/header.html')
       .then(res => res.text())
       .then(html => document.getElementById('navbar').innerHTML = html)
 

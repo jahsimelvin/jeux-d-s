@@ -1,16 +1,46 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil - Jeu de Dé</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Jeu de Dé Multijoueur</title>
+  <link rel="icon" type="image/png" href="/static/dice.png">
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/client.js"></script>
+  <style>
+
+    img {
+      width: 200px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    a.start-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 25px;
+      background-color: #3f75f2;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    a.start-btn:hover {
+      background-color: #2c5ee0;
+    }
+  </style>
 </head>
 <body>
-  <div class="welcome-screen">
-    <img src="dice.png" alt="Dé" class="logo">
-    <h1>Bienvenue sur le Jeu de Dé</h1>
-    <a href="/login.html" class="start-btn">Start</a>
-  </div>
+  <img src="/static/dice.png" alt="Dés du jeu">
+  <h1>Bienvenue sur le Jeu de Dé Multi-Joueur</h1>
+  <a href="/login.html" class="start-btn">Commencer</a>
 </body>
 </html>
